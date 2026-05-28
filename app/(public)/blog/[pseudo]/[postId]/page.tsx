@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getPublicPostById } from "@/lib/data/blog";
 
@@ -30,8 +31,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const interests = data.blog.interests?.join(", ") || "empty";
-
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-10">
       <p className="text-sm text-gray-600">
@@ -41,12 +40,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </p>
 
       <article className="mt-4 rounded-md border border-gray-200 p-6">
+        {data.post.cover_image_url ? (
+          <div className="relative mb-6 h-64 w-full overflow-hidden rounded-md sm:h-80 lg:h-96">
+            <Image
+              src={data.post.cover_image_url}
+              alt={data.post.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 896px, 1024px"
+              className="object-cover"
+              priority
+            />
+          </div>
+        ) : null}
+
         <h1 className="text-3xl font-semibold">{data.post.title}</h1>
         <p className="mt-2 text-sm text-gray-600">
           Published: {formatPublishedAt(data.post.published_at)}
-        </p>
-        <p className="mt-2 text-sm text-gray-700">
-          Cover image: {data.post.cover_image_url || "empty"}
         </p>
         <div
           className="prose mt-6 max-w-none"
@@ -56,11 +65,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <section className="mt-6 rounded-md border border-gray-200 p-6">
         <h2 className="text-lg font-semibold">Author</h2>
-        <p className="mt-2 text-sm text-gray-700">Bio: {data.blog.bio || "empty"}</p>
-        <p className="mt-2 text-sm text-gray-700">
-          Avatar: {data.blog.avatar_url || "empty"}
-        </p>
-        <p className="mt-2 text-sm text-gray-700">Interests: {interests}</p>
+        <p className="mt-2 text-sm text-gray-700">Pseudo: {data.blog.pseudo}</p>
       </section>
     </main>
   );

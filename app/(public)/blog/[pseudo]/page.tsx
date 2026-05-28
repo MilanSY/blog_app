@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublicBlogByPseudo } from "@/lib/data/blog";
@@ -30,15 +31,27 @@ export default async function BlogPage({ params }: BlogPageProps) {
   }
 
   const interests = data.blog.interests?.join(", ") || "empty";
+  const avatarUrl = data.blog.avatar_url;
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <section className="rounded-md border border-gray-200 p-6">
+         <div className="mt-3">
+          {avatarUrl?.startsWith("/") ? (
+            <Image
+              src={avatarUrl}
+              alt={`${data.blog.pseudo} avatar`}
+              width={72}
+              height={72}
+              className="mt-2 h-[72px] w-[72px] rounded-full border border-gray-200 object-cover"
+            />
+          ) : (
+            <p className="mt-1 text-sm text-gray-700">{avatarUrl || "empty"}</p>
+          )}
+        </div>
         <h1 className="text-3xl font-semibold">{data.blog.pseudo}</h1>
         <p className="mt-3 text-sm text-gray-700">Bio: {data.blog.bio || "empty"}</p>
-        <p className="mt-2 text-sm text-gray-700">
-          Avatar: {data.blog.avatar_url || "empty"}
-        </p>
+       
         <p className="mt-2 text-sm text-gray-700">Interests: {interests}</p>
       </section>
 

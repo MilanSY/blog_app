@@ -48,6 +48,10 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
       return null;
     }
 
+    if (sessionPayload.role !== "admin" && sessionPayload.role !== "blogger") {
+      return null;
+    }
+
     return {
       userId: sessionPayload.userId,
       email: sessionPayload.email,
