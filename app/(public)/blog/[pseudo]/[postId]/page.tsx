@@ -7,7 +7,7 @@ export const revalidate = 300;
 type BlogPostPageProps = {
   params: Promise<{
     pseudo: string;
-    post: string;
+    postId: string;
   }>;
 };
 
@@ -23,8 +23,8 @@ function formatPublishedAt(value: string | null) {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { pseudo, post } = await params;
-  const data = await getPublicPostById(pseudo, post);
+  const { pseudo, postId } = await params;
+  const data = await getPublicPostById(pseudo, postId);
 
   if (!data) {
     notFound();
