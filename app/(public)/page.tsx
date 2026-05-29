@@ -1,7 +1,6 @@
 import Link from "next/link";
+import HomeSearchForm from "@/components/public/HomeSearchForm";
 import { getVisibleBlogsNewestFirst } from "@/lib/data/blog";
-
-export const revalidate = 300;
 
 function formatPublishedAt(value: string | null) {
   if (!value) {
@@ -14,14 +13,23 @@ function formatPublishedAt(value: string | null) {
   }).format(new Date(value));
 }
 
-export default async function Home() {
-  const blogs = await getVisibleBlogsNewestFirst();
+type HomePageProps = {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+};
+
+export default async function Home({ searchParams }: HomePageProps) {
+  const params = await searchParams;
+  const query = params.q?.trim() ?? "";
+  const blogs = await getVisibleBlogsNewestFirst(query);
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <section>
         <h1 className="text-3xl font-semibold">Visible blogs</h1>
         <p className="mt-2 text-sm text-gray-600">Sorted from newest to oldest.</p>
+        <HomeSearchForm initialQuery={query} />
       </section>
 
       {blogs.length === 0 ? (

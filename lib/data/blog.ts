@@ -61,13 +61,20 @@ export async function getPublicBlogByPseudo(
   };
 }
 
-export async function getVisibleBlogsNewestFirst(): Promise<PublicBlogListItem[]> {
+export async function getVisibleBlogsNewestFirst(searchText?: string): Promise<PublicBlogListItem[]> {
   const supabase = createClient<Database>(supabaseUrl, supabasePublishableKey);
+  const query = searchText?.trim();
 
-  const { data: blogs, error: blogsError } = await supabase
+  let blogsQuery = supabase
     .from("blogs")
     .select("id, pseudo, bio, avatar_url, interests")
     .eq("is_visible", true);
+
+  if (query) {
+    blogsQuery = blogsQuery.ilike("pseudo", `%${query}%`);
+  }
+
+  const { data: blogs, error: blogsError } = await blogsQuery;
 
   if (blogsError || !blogs || blogs.length === 0) {
     return [];

@@ -1,9 +1,8 @@
 import { getAboutContent } from "@/lib/data/about";
 
-export const revalidate = 300;
-
 export default async function AboutPage() {
   const about = await getAboutContent();
+  console.log("Fetched about content");
 
   if (!about) {
     return (
