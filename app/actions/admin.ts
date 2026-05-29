@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { getSession } from "@/lib/auth/session";
 import type { Database } from "@/lib/supabase/database.types";
@@ -56,6 +56,7 @@ export async function updateAboutAction(
 
   revalidatePath("/about");
   revalidatePath("/admin/about/edit");
+  updateTag("about");
 
   return { status: "success", message: "About page updated." };
 }

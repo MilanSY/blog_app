@@ -1,3 +1,5 @@
 ## Blog-APP
 
-utilise supabase en bd
+login admin:
+admin@blog-app.com
+admin123
