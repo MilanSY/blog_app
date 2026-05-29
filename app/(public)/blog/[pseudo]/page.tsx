@@ -4,8 +4,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublicBlogByPseudo } from "@/lib/data/blog";
 
-export const revalidate = 300;
-
 type BlogPageProps = {
   params: Promise<{
     pseudo: string;

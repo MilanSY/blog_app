@@ -4,8 +4,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getPublicPostById } from "@/lib/data/blog";
 
-export const revalidate = 300;
-
 type BlogPostPageProps = {
   params: Promise<{
     pseudo: string;

@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: .
+      target: runner
+    container_name: blog_app_web
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
