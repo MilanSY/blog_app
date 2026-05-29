@@ -49,3 +49,13 @@ Node.js fs rename failed after 101 retries with error Error: EPERM: operation no
 [browser] Uncaught Error: EPERM: operation not permitted, rename 'C:\dev\license\blog_app\.next\dev\server\server-reference-manifest.js.tmp.5cb8tw99urs' -> 'C:\dev\license\blog_app\.next\dev\server\server-reference-manifest.js'
 
 La solution était de rename middleware.ts en proxy.ts, ce qui me surprend car je n'ai jamais eu l'erreur avant pendant l'atérnance et que l'erreur n'est pas apparu dès le début du developpement, toute la journé le middleware.ts fonctionnait sans problème.
+
+# 6) Trouble shoot ISR
+
+problème:
+Dans mon projet dû au Header dans le layout le site entier était en SSR. J'ai donc du demander à l'ia de m'aider à corriger le problème.
+
+Ce qui s'est passé:
+Il m'a proposé plusieur façon de corriger le problème non pass en corrigeant l'appel à la session dans le header mais en faisant une refactorisation de toute l'app.
+
+Au final je lui ai proposer de passer la session dans un appel api, et c'est à ce moment là qu'il m'a proposer de passer le header en composant client, ce qui a corriger le problème.
