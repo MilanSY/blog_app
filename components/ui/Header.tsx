@@ -17,8 +17,8 @@ export default async function Header() {
           {session ? (
             <>
               {session.role === "blogger" ? <Link href="/blog/edit">Edit blog</Link> : null}
-              {session.role === "admin" ? <Link href="/admin/about/edit">Edit about</Link> : null}
-              {session.role === "admin" ? <Link href="/admin/moderation">Moderation</Link> : null}
+              {session.role === "admin" ? <Link href="/about/edit">Edit about</Link> : null}
+              {session.role === "admin" ? <Link href="/moderation">Moderation</Link> : null}
               <span className="text-xs text-gray-300">{session.email}</span>
               <form action={logoutAction}>
                 <button type="submit" className="cursor-pointer underline">
