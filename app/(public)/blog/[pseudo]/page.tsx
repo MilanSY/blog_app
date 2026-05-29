@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,6 +11,23 @@ type BlogPageProps = {
     pseudo: string;
   }>;
 };
+
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { pseudo } = await params;
+  const data = await getPublicBlogByPseudo(pseudo);
+
+  if (!data) {
+    return {
+      title: "Blog not found | Blog App",
+      description: "This blog is unavailable.",
+    };
+  }
+
+  return {
+    title: `${data.blog.pseudo} | Blog App`,
+    description: data.blog.bio || `Read posts from ${data.blog.pseudo}.`,
+  };
+}
 
 function formatPublishedAt(value: string | null) {
   if (!value) {

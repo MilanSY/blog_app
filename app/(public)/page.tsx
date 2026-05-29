@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import HomeSearchForm from "@/components/public/HomeSearchForm";
 import { getVisibleBlogsNewestFirst } from "@/lib/data/blog";
+
+export const metadata: Metadata = {
+  title: "Home | Blog App",
+  description: "Discover visible blogs sorted by recent activity.",
+};
 
 function formatPublishedAt(value: string | null) {
   if (!value) {

@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { getAboutContent } from "@/lib/data/about";
+
+export const metadata: Metadata = {
+  title: "About | Blog App",
+  description: "Learn more about Blog App.",
+};
 
 export default async function AboutPage() {
   const about = await getAboutContent();
-  console.log("Fetched about content");
 
   if (!about) {
     return (

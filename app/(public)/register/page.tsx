@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { registerAction } from "@/app/actions/auth";
+
+export const metadata: Metadata = {
+  title: "Register | Blog App",
+  description: "Create your blogger account on Blog App.",
+};
 
 type RegisterPageProps = {
   searchParams: Promise<{

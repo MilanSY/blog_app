@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { loginAction } from "@/app/actions/auth";
+
+export const metadata: Metadata = {
+  title: "Login | Blog App",
+  description: "Sign in to your Blog App account.",
+};
 
 type LoginPageProps = {
   searchParams: Promise<{

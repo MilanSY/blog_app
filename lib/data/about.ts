@@ -10,7 +10,7 @@ export type AboutContent = {
 export async function getAboutContent(): Promise<AboutContent | null> {
   const supabase = createClient<Database>(supabaseUrl, supabasePublishableKey);
 
-  let query = supabase
+  const query = supabase
     .from("about")
     .select("title, content_html")
     .eq("id", 1);
