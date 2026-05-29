@@ -1,21 +1,15 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { createPostAction } from "@/app/actions/postEdit";
 import PostEditorForm from "@/components/blogger/forms/PostEditorForm";
 import { getSession } from "@/lib/auth/session";
-import type { Database } from "@/lib/supabase/database.types";
-import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/env";
+import { getMyBlogForAddPost } from "@/lib/data/post-add";
 
 type AddPostPageProps = {
   params: Promise<{
     pseudo: string;
   }>;
 };
-
-function getSupabase() {
-  return createClient<Database>(supabaseUrl, supabasePublishableKey);
-}
 
 export default async function AddPostPage({ params }: AddPostPageProps) {
   const session = await getSession();
@@ -25,15 +19,9 @@ export default async function AddPostPage({ params }: AddPostPageProps) {
   }
 
   const { pseudo } = await params;
-  const supabase = getSupabase();
+  const blog = await getMyBlogForAddPost(session.userId);
 
-  const { data: blog, error } = await supabase
-    .from("blogs")
-    .select("pseudo")
-    .eq("user_id", session.userId)
-    .maybeSingle();
-
-  if (error || !blog) {
+  if (!blog) {
     notFound();
   }
 

@@ -1,14 +1,8 @@
-import { notFound, redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
 import { updateAboutAction } from "@/app/actions/admin";
 import AboutEditorForm from "@/components/admin/forms/AboutEditorForm";
+import { getAboutContent } from "@/lib/data/about";
 import { getSession } from "@/lib/auth/session";
-import type { Database } from "@/lib/supabase/database.types";
-import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/env";
-
-function getSupabase() {
-  return createClient<Database>(supabaseUrl, supabasePublishableKey);
-}
 
 export default async function AdminAboutEditPage() {
   const session = await getSession();
@@ -21,16 +15,7 @@ export default async function AdminAboutEditPage() {
     redirect("/");
   }
 
-  const supabase = getSupabase();
-  const { data: about, error } = await supabase
-    .from("about")
-    .select("title, content_html, is_visible")
-    .eq("id", 1)
-    .maybeSingle();
-
-  if (error) {
-    notFound();
-  }
+  const about = await getAboutContent();
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-10">
@@ -41,8 +26,7 @@ export default async function AdminAboutEditPage() {
         action={updateAboutAction}
         initialValues={{
           title: about?.title ?? "About",
-          contentHtml: about?.content_html ?? "",
-          isVisible: about?.is_visible ?? true,
+          contentHtml: about?.contentHtml ?? "",
         }}
       />
     </main>

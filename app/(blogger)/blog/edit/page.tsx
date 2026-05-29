@@ -1,14 +1,8 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import EditBlogForm from "@/components/blogger/forms/EditBlogForm";
 import PostCardsGrid from "@/components/blogger/posts/PostCardsGrid";
 import { getSession } from "@/lib/auth/session";
-import type { Database } from "@/lib/supabase/database.types";
-import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/env";
-
-function getSupabase() {
-  return createClient<Database>(supabaseUrl, supabasePublishableKey);
-}
+import { getMyBlogForEdit } from "@/lib/data/blog-edit";
 
 export default async function EditBlogPage() {
   const session = await getSession();
@@ -17,14 +11,9 @@ export default async function EditBlogPage() {
     redirect("/login");
   }
 
-  const supabase = getSupabase();
-  const { data: blog, error } = await supabase
-    .from("blogs")
-    .select("id, pseudo, bio, avatar_url, interests")
-    .eq("user_id", session.userId)
-    .maybeSingle();
+  const { blog, posts, postsError } = await getMyBlogForEdit(session.userId);
 
-  if (error || !blog) {
+  if (!blog) {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-10">
         <h1 className="text-3xl font-semibold">Edit blog</h1>
@@ -32,13 +21,6 @@ export default async function EditBlogPage() {
       </main>
     );
   }
-
-  const { data: posts, error: postsError } = await supabase
-    .from("posts")
-    .select("id, title, slug, published_at, is_visible")
-    .eq("blog_id", blog.id)
-    .order("published_at", { ascending: false, nullsFirst: false })
-    .order("title", { ascending: true });
 
   if (postsError) {
     return (
@@ -61,7 +43,7 @@ export default async function EditBlogPage() {
 
       <section className="mt-10">
         <h2 className="text-2xl font-semibold">Your posts</h2>
-        <PostCardsGrid pseudo={blog.pseudo} posts={posts ?? []} />
+        <PostCardsGrid pseudo={blog.pseudo} posts={posts} />
       </section>
     </main>
   );

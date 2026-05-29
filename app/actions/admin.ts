@@ -35,7 +35,6 @@ export async function updateAboutAction(
 
   const title = String(formData.get("title") ?? "").trim();
   const contentHtml = String(formData.get("content_html") ?? "").trim();
-  const isVisible = String(formData.get("is_visible") ?? "") === "on";
 
   if (!title || !contentHtml) {
     return { status: "error", message: "Title and content are required." };
@@ -47,7 +46,6 @@ export async function updateAboutAction(
       id: 1,
       title,
       content_html: contentHtml,
-      is_visible: isVisible,
     },
     { onConflict: "id" },
   );

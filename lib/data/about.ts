@@ -7,15 +7,15 @@ export type AboutContent = {
   contentHtml: string;
 };
 
-export async function getVisibleAbout(): Promise<AboutContent | null> {
+export async function getAboutContent(): Promise<AboutContent | null> {
   const supabase = createClient<Database>(supabaseUrl, supabasePublishableKey);
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("about")
     .select("title, content_html")
-    .eq("id", 1)
-    .eq("is_visible", true)
-    .maybeSingle();
+    .eq("id", 1);
+
+  const { data, error } = await query.maybeSingle();
 
   if (error || !data) {
     return null;

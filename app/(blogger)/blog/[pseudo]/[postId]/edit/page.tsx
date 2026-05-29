@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { updatePostAction } from "@/app/actions/postEdit";
 import PostEditorForm from "@/components/blogger/forms/PostEditorForm";
 import { getSession } from "@/lib/auth/session";
-import type { Database } from "@/lib/supabase/database.types";
-import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/env";
+import { getMyBlogAndOwnedPostForEdit } from "@/lib/data/post-edit";
 
 type EditPostPageProps = {
   params: Promise<{
@@ -13,10 +11,6 @@ type EditPostPageProps = {
     postId: string;
   }>;
 };
-
-function getSupabase() {
-  return createClient<Database>(supabaseUrl, supabasePublishableKey);
-}
 
 export default async function EditPostPage({ params }: EditPostPageProps) {
   const session = await getSession();
@@ -26,15 +20,9 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
   }
 
   const { pseudo, postId } = await params;
-  const supabase = getSupabase();
+  const { blog, post } = await getMyBlogAndOwnedPostForEdit(session.userId, postId);
 
-  const { data: blog, error: blogError } = await supabase
-    .from("blogs")
-    .select("id, pseudo")
-    .eq("user_id", session.userId)
-    .maybeSingle();
-
-  if (blogError || !blog) {
+  if (!blog) {
     notFound();
   }
 
@@ -42,14 +30,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
     redirect(`/blog/${blog.pseudo}/${postId}/edit`);
   }
 
-  const { data: post, error: postError } = await supabase
-    .from("posts")
-    .select("id, title, content_html, cover_image_url, is_visible")
-    .eq("id", postId)
-    .eq("blog_id", blog.id)
-    .maybeSingle();
-
-  if (postError || !post) {
+  if (!post) {
     notFound();
   }
 

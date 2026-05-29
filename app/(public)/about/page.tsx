@@ -1,9 +1,9 @@
-import { getVisibleAbout } from "@/lib/data/about";
+import { getAboutContent } from "@/lib/data/about";
 
 export const revalidate = 300;
 
 export default async function AboutPage() {
-  const about = await getVisibleAbout();
+  const about = await getAboutContent();
 
   if (!about) {
     return (

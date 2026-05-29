@@ -9,7 +9,6 @@ type AboutEditorFormProps = {
   initialValues: {
     title: string;
     contentHtml: string;
-    isVisible: boolean;
   };
 };
 
@@ -52,16 +51,6 @@ export default function AboutEditorForm({ action, initialValues }: AboutEditorFo
       <label className="block text-sm">
         <span>Content</span>
         <WysiwygEditor initialHtml={initialValues.contentHtml} onChange={setContentHtml} />
-      </label>
-
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          name="is_visible"
-          type="checkbox"
-          defaultChecked={initialValues.isVisible}
-          className="h-4 w-4"
-        />
-        <span>Visible</span>
       </label>
 
       <button

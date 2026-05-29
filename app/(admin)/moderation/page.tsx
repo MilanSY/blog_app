@@ -1,13 +1,7 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { toggleBlogVisibilityAction, togglePostVisibilityAction } from "@/app/actions/admin";
 import { getSession } from "@/lib/auth/session";
-import type { Database } from "@/lib/supabase/database.types";
-import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/env";
-
-function getSupabase() {
-  return createClient<Database>(supabaseUrl, supabasePublishableKey);
-}
+import { getModerationData } from "@/lib/data/moderation";
 
 export default async function AdminModerationPage() {
   const session = await getSession();
@@ -20,15 +14,7 @@ export default async function AdminModerationPage() {
     redirect("/");
   }
 
-  const supabase = getSupabase();
-
-  const [{ data: blogs }, { data: posts }] = await Promise.all([
-    supabase.from("blogs").select("id, pseudo, is_visible").order("pseudo", { ascending: true }),
-    supabase
-      .from("posts")
-      .select("id, title, is_visible, blog_id, blogs!inner(pseudo)")
-      .order("title", { ascending: true }),
-  ]);
+  const { blogs, posts } = await getModerationData();
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
@@ -47,7 +33,7 @@ export default async function AdminModerationPage() {
               </tr>
             </thead>
             <tbody>
-              {(blogs ?? []).map((blog) => (
+              {blogs.map((blog) => (
                 <tr key={blog.id} className="border-t border-gray-200">
                   <td className="px-3 py-2">{blog.pseudo}</td>
                   <td className="px-3 py-2">{blog.is_visible ? "yes" : "no"}</td>
@@ -87,7 +73,7 @@ export default async function AdminModerationPage() {
               </tr>
             </thead>
             <tbody>
-              {(posts ?? []).map((post) => (
+              {posts.map((post) => (
                 <tr key={post.id} className="border-t border-gray-200">
                   <td className="px-3 py-2">{post.title}</td>
                   <td className="px-3 py-2">{post.blogs.pseudo}</td>
